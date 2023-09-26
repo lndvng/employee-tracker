@@ -58,21 +58,18 @@ inquirer.prompt(questions)
     else if (answer.userChoice == "Add a department") {
         inquirer.prompt([
             {
-                type: "input",
-                name: "depName",
+                name: "name",
                 message: "What is the name of the department?"
             }
         ])
         .then((answer) => {
-            connection.query(
-                "INSERT INTO `department` SET ?",
-                {
-                    name: answer.name,
-                },
-                function(err, results,) {
-                console.log(`Department ${answer.name} has been added.`);
-                },
-            );
+            connection
+            .promise()
+            .query(
+                "INSERT INTO department SET ?",
+                answer,
+            )
+            .then(() => console.log(`Department ${answer.name} has been added.`));
         })
     }
     else if (answer.userChoice == "Add a role") {
@@ -89,23 +86,26 @@ inquirer.prompt(questions)
             },
             {
                 type: "list",
-                name: "roleDep",
+                name: "roleDepartment_Id",
                 message: "Which department does the role belong to?",
                 choices: ["Management", "Sales Rep", "Marketing", "Security"]
             }
         ])
         .then((answer) => {
-            connection.query(
-                "INSERT INTO `role` SET ?",
+            connection
+            .promise()
+            .query(
+                "INSERT INTO role SET ?",
                 {
                     title: answer.roleName,
                     salary: answer.roleSalary,
-                    department_id: answer.userChoice,
+                    department_id: answer.roleDepartment_Id,
                 },
                 function(err, results,) {
                 console.log(results);
                 }
-            );
+            )
+            .then(() => console.log(`Role ${answer.roleName} has been added.`));
         })
     }
     else if (answer.userChoice == "Add an employee") {

@@ -1,13 +1,17 @@
+-- drop existing and create cms data base
 DROP DATABASE IF EXISTS cms_db;
 CREATE DATABASE cms_db;
 
+-- use cms data base
 USE cms_db;
 
+-- create department table
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) NOT NULL
 );
 
+ -- create role table
 CREATE TABLE role (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
@@ -18,6 +22,7 @@ CREATE TABLE role (
     ON DELETE CASCADE
 );
 
+-- create employee table
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
