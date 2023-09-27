@@ -20,14 +20,7 @@ const questions = [
     },
 ];
   
-const updateEmp = [
-    {
-        type: "list",
-        name: "updateWho",
-        message: "Which employee's role do you want to update?",
-        choices: ["Linda Vuong", "Allie Deaver", "Malia Cho", "Vanna Luciano", "Chan Nguyen", "Krystian Kowalak", "Matthew Galvin"]
-    }
-]
+const updateEmp = 
 
 inquirer.prompt(questions)
 .then((answer) => {
@@ -36,8 +29,8 @@ inquirer.prompt(questions)
             "SELECT * FROM `department`",
             function(err, results,) {
             console.log(results);
-            }
-        );
+            }                
+        ); 
     }   
     else if (answer.userChoice == "View all roles") {
         connection.query(
@@ -85,10 +78,9 @@ inquirer.prompt(questions)
                 message: "What is the salary of the role?"
             },
             {
-                type: "list",
+                type: "input",
                 name: "roleDepartment_Id",
-                message: "Which department does the role belong to?",
-                choices: ["Management", "Sales Rep", "Marketing", "Security"]
+                message: "Which department does the role belong to? Please enter the corresponding number: (1)Manager, (2)Budtender, (3)Social Media Manager, (4)Delivery Driver, (5)Security Guard"
             }
         ])
         .then((answer) => {
@@ -121,42 +113,60 @@ inquirer.prompt(questions)
                 message: "What is the employee's last name?"
             },
             {
-                type: "list",
+                type: "input",
                 name: "empRole",
-                message: "What is the employee's role?",
-                choices: ["Manager", "Budtender", "Social Media Manager", "Delivery Driver", "Security Guard"]
+                message: "What is the employee's role? Please enter the corresponding number: (1)Manager, (2)Budtender, (3)Social Media Manager, (4)Delivery Driver, (5)Security Guard",
             },
             {
-                type: "list",
+                type: "input",
                 name: "empMngr",
-                message: "Who is employee's manager?",
-                choices: ["Linda Vuong", "NULL"]
+                message: "Who is employee's manager? Please enter the corresponding number: (1)Linda Vuong, or hit enter for NULL",
             }
         ])
         .then((answer) => {
-            connection.query(
-                "INSERT to `employee` SET ?",
-                [
-                    {
-                        role_id: answer.role_id,
-                    },
-                    {
-                        id: answer.employee_id,
-                    }
-                ],
-                function(err, results,) {
-                console.log(results);
-                }
-            );
+            connection
+            .promise()
+            .query(
+                "INSERT INTO employee SET ?",
+                {
+                    first_name: answer.empFirstName,
+                    last_name: answer.empLastName,
+                    role_id: answer.empRole,
+                    manager_id: answer.empMngr,
+                },
+            )
+            .then(() => console.log(`Employee ${answer.empFirstName} has been added.`));
         })
     }
     else if (answer.userChoice == "Update an employee role") {
-        connection.query(
-            "UPDATE `employee` SET ? WHERE ?",
-            function(err, results,) {
-            console.log(results);
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "newFirstName",
+                message: "What is the employee's first name?"
+            },
+            {
+                type: "input",
+                name: "newLastName",
+                message: "What is the employee's last name?"
+            },
+            {
+                type: "input",
+                name: "newRoleId",
+                message: "Please enter the corresponding number for new role ID: (1)Manager, (2)Budtender, (3)Social Media Manager, (4)Delivery Driver, (5)Security Guard"
             }
-        );
+        ])
+        .then((answer) => {
+            connection
+            .promise()
+            .query(
+                "UPDATE `employee` SET ? WHERE ?",
+                {
+                    role_id: answer.newRoleId,
+                    employee_id: role_id
+                }
+            )
+            .then(() => console.log(`${answer.updateWho}'s role has been set`));
+        })
     }
 });
-
